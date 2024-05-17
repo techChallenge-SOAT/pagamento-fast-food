@@ -51,27 +51,11 @@ Antes de iniciar, certifique-se de ter as seguintes ferramentas instaladas em su
 			"valor": 20 
 		  }
 		```
-2. **Consultar pagamento específico**
-	- **Método:** `GET`
-	- **Endpoint:** `/pagamento/{id}`
-	- **Exemplo Requisição:**
 
-		```bash
-		GET localhost:3000/pagamento/1
-		```
-
-4. **Consultar todos os pagamento**
-	- **Método:** `GET`
-	- **Endpoint:** `/pagamento`
-	- **Exemplo Requisição:**
-
-		```bash
-		localhost:3000/pagamento
-		```
 
  1. **Gerar pagamento pedido**
 	 - **Método:** `POST`
-	 - **Endpoint:** `/webhooks/pagamento/mercadopago`
+	 - **Endpoint:** `/webhooks/pagamento/mercadopago/confirmacao`
 	 - **Exemplo Requisição:**
 		```json
 		{
