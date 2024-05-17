@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "bd_pagamento",
+    "password": "TsTxHm123daseq",
+    "database": "bd_pagamento",
+    "host": "bd-pagamento-servico.cjiacqmy6qd1.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "bd_pagamento",
+    "password": "postgres",
+    "database": "bd_pagamento",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "bd_pagamento",
+    "password": "TsTxHm123daseq",
+    "database": "bd_pagamento",
+    "host": "bd-pagamento-db.cjiacqmy6qd1.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres"
+  }
+}
