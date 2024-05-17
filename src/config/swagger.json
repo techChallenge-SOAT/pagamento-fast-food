@@ -1,0 +1,78 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API de Pagamentos",
+    "description": "Documentação da API de Pagamentos"
+  },
+  "paths": {
+    "/pagamento": {
+      "post": {
+        "summary": "Cria um novo pagamento",
+        "description": "Cria um novo pagamento com os detalhes fornecidos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_pedido": {
+                    "type": "string"
+                  },
+                  "cpf_cliente": {
+                    "type": "string",
+                    "format": "cpf"
+                  },
+                  "descricao_pedido": {
+                    "type": "string"
+                  },
+                  "valor": {
+                    "type": "number"
+                  }
+                },
+                "required": ["id_pedido", "cpf_cliente", "descricao_pedido", "valor"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pagamento criado com sucesso"
+          }
+        }
+      }
+    },
+    "/webhooks/pagamento/mercadopago": {
+      "post": {
+        "summary": "Atualiza o status de um pagamento via MercadoPago",
+        "description": "Atualiza o status de um pagamento via MercadoPago com os detalhes fornecidos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_pagamento": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["aprovado", "rejeitado"]
+                  }
+                },
+                "required": ["id_pagamento", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status de pagamento atualizado com sucesso"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": ["es2017", "dom", "es2018.promise"],
+    "paths": {
+      "@db/*": ["docs/bd/*"],
+      "@docs/*": ["./docs/*"]
+    },
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules"],
+  "include": [ "*"],
+  "typeAcquisition": {
+    "enable": false
+  }
+}

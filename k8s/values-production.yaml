@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pagamento-fast-food
+  template:
+    metadata:
+      labels:
+        app: pagamento-fast-food
+    spec:
+      containers:
+        - name: pagamento-fast-food
+          image: brunonascimento/pagamento-fast-food:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@postgres-service:5432/bd-pagamento
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pagamento-fast-food-service
+spec:
+  selector:
+    app: pagamento-fast-food
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort
+  
