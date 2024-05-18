@@ -22,11 +22,9 @@ jobs:
         run: npm install
 
       - name: SonarCloud
-        uses: actions/checkout@v3
+        uses: SonarSource/sonarcloud-github-action@master
         with:
           fetch-depth: 0 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -47,5 +45,3 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           URL_PEDIDO: ${{ secrets.URL_PEDIDO }}
           URL_PAGAMENTO: ${{ secrets.URL_PAGAMENTO }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
