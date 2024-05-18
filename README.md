@@ -22,17 +22,28 @@ Antes de iniciar, certifique-se de ter as seguintes ferramentas instaladas em su
 
 2. **Suba a aplicação:**
 
-## Docker
+# deploy utilizando cloud|Formation localmente
 
--  **Subir projeto**
-
+-  **instalar o serverless framework**
 	```bash
-	docker-compose up
+	npm i -g serverless
 	```
-- **Desligar Projeto**
+- **instalar as dependências**
 	```bash
-	docker-compose down
+	npm install
 	```
+-  **buildar a aplicação**
+	```bash
+	npm run build
+	```
+- **realizar o deploy via serverless**
+	```bash
+	serverless deploy
+	```
+Lembre-se atualizar a envs 
+	DATABASE_URL
+	URL_PEDIDO
+	URL_PAGAMENTO (para realização da simulação de confirmação de pagamento)
 
 # Rotas da API
 
