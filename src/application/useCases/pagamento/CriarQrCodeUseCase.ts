@@ -2,7 +2,6 @@
 import Pagamento from '../../valueObjects/Pagamento';
 import { PagamentoRepository } from '../../../adapters/postgres/pagamento/PagamentoRepository';
 import {gerarQrCodePix} from '../../../adapters/mergadopago/gerarQrcode'
-const baseUrlPedido = process.env.URL_PEDIDOS
 
 export class CriarQrcodeUseCase {
   static async execute(

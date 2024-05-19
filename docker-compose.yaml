@@ -6,24 +6,40 @@ services:
       POSTGRES_DB: bd-pagamento
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
     ports:
       - '5432:5432'
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pagamentos-network
 
   app:
+    container_name: pagamentos
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - '8000:8000'
     volumes:
       - .:/app
-    command: npm start
+    command: npm run dev
     depends_on:
       - postgres
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/bd-pagamento
+      URL_PEDIDOS: http://pedidos:3000/pedidos
+    networks:
+      - pagamentos-network
+      - shared_network
 
 volumes:
   postgres_data:
+
+networks:
+  pagamentos-network:
+    driver: bridge
+  shared_network:
+    name: shared-network
+    external: true
