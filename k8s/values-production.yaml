@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: pagamentos-fast-food
-          image: pagamentos-k8s:latest
+          image: public.ecr.aws/o9d4t2y8/pagamentos-fast-food:latest
           imagePullPolicy: Never
           resources:
             limits:
