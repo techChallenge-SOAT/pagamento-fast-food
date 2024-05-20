@@ -93,3 +93,12 @@ Lembre-se atualizar a envs
 >1. Gerar pagamento pedido
 >2. Atualizar status Pedido para `Aguardando Pagamento`
 >3. Atualizar status Pedido para `pago`
+
+
+# Evidências de testes
+- Testes criados
+![Testes criados](assets/testes1.jpeg)
+
+- Testes Executados
+![Testes executados](assets/testesExecucao.jpeg)
+
