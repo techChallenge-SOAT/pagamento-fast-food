@@ -32,7 +32,7 @@ export async function gerarQrCodePix({ valor, descricao_pedido, cpf_cliente, id 
     const url: string = `000201${payload}`;
     const codigoTexto: string = url;
     const imagem: string = await gerarQRCodeImagem(url);
-    await simularConfirmacaoPagamentoWebhook({id: id, status:"pago"})
+    // await simularConfirmacaoPagamentoWebhook({id: id, status:"pago"})
     return { emv: codigoTexto, img: imagem, id_pagamento: id };
 }
 
