@@ -4,7 +4,6 @@ import { Pagamento as PagamentoModel } from '../models/PagamentosModel';
 export class PagamentoRepository {
 
   static async criarQrCodePagamento(pagamento: Pagamento) {
-
     return await PagamentoModel.create({
       id: pagamento.id,
       cpf_cliente: pagamento.cpf_cliente,
