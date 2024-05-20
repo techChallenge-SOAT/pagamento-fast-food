@@ -1,36 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-deployment
+  name: pagamento-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: pagamento-fast-food
+      app: pagamentos-fast-food
   template:
     metadata:
       labels:
-        app: pagamento-fast-food
+        app: pagamentos-fast-food
     spec:
       containers:
-        - name: pagamento-fast-food
-          image: brunonascimento/pagamento-fast-food:latest
+        - name: pagamentos-fast-food
+          image: pagamentos-k8s:latest
+          imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
           ports:
-            - containerPort: 3000
+            - containerPort: 8000
           env:
             - name: DATABASE_URL
-              value: postgres://postgres:postgres@postgres-service:5432/bd-pagamento
+              value: postgres://postgres:postgres@host.docker.internal:5432/bd-pagamento
+            - name: URL_PEDIDOS
+              value: http://pedidos-fast-food-service:3000/pedidos
+            
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pagamento-fast-food-service
+  name: pagamentos-fast-food-service
 spec:
   selector:
-    app: pagamento-fast-food
+    app: pagamentos-fast-food
   ports:
     - protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 8000
+      targetPort: 8000
   type: NodePort
   
