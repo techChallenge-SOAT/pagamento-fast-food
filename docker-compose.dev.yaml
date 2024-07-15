@@ -9,15 +9,18 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgresdata:/var/lib/postgresql/data
+    networks:
+      - pagamentos-network
 
   app:
+    container_name: pagamentos
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3000:8000'
+      - '8000:8000'
     volumes:
       - .:/app
     command: npm run dev
@@ -25,6 +28,24 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/bd-pagamento
+      PEDIDO_FAST_FOOD_URL: http://pedidos:3000
+      PAGAMENTO_FEST_FOOD_URL: http://pagamentos:8000
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID:  
+      AWS_SECRET_ACCESS_KEY:  
+      STEP_FUNCTION_MACHINE: arn:aws:states:us-east-1:<account-id>:stateMachine:MyStateMachine-86q70vx3x
+      SQS_CONFIRM_PAYMENT_QUEUE: https://sqs.us-east-1.amazonaws.com/<account-id>/confirmar-pagamento-queue
+      SQS_CANCEL_PAYMENT_QUEUE: https://sqs.us-east-1.amazonaws.com/<account-id>/cancelar-pagamento-queue
+    networks:
+      - pagamentos-network
+      - shared_network
 
 volumes:
   postgresdata:
+
+networks:
+  pagamentos-network:
+    driver: bridge
+  shared_network:
+    name: shared-network
+    external: true

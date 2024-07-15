@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrlPagamento = process.env.URL_PAGAMENTO
+const baseUrlPagamento = process.env.PAGAMENTO_FEST_FOOD_URL
 
 interface PagamentoConfirmadoPayload {
     id: string;

@@ -1,7 +1,6 @@
 import { PagamentoRepository } from '../../../adapters/postgres/pagamento/PagamentoRepository';
+import {PedidoFastFoodService} from '../../../adapters/services/BuscarPorIdPedido'
 import { Status } from '../../../domain/models/Pagamento';
-import axios from 'axios'
-const baseUrlPedido = process.env.URL_PEDIDOS
 
 export class AlterarStatusDoPagamentoUseCase {
   static async execute(id: string, status: Status) {
@@ -17,13 +16,13 @@ export class AlterarStatusDoPagamentoUseCase {
     if (!Object.values(Status).includes(status)) {
       throw new Error('Status inválido');
     }
-    try {
-      await axios.patch(`${baseUrlPedido}/${pedido?.id_pedido}`, {
-        status: status
-      })
-    } catch (error) {
-      console.error("erro ao atualizar status do pedido", error)
-    }  
-    return await PagamentoRepository.atualizarStatus(id, status) 
+
+    await PagamentoRepository.atualizarStatus(id, status)  
+
+    const detalhePedido = await PedidoFastFoodService.consultarPedido(pedido?.id_pedido)
+    if(detalhePedido?.data){
+      detalhePedido.data.status = status
+    }
+    return detalhePedido?.data
   }
 }

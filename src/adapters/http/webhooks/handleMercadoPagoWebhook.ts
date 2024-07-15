@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { AlterarStatusDoPagamentoUseCase } from '../../../application/useCases/pagamento/AlterarStatusDoPagamentoUseCase';
 import { Status } from '../../../domain/models/Pagamento';
+import {startStepFunctionExecution} from '../../stepfunction/ExecutaOrquestrador'
 
 export const handleConfirmaPagamentoWebhook = async (req: Request, res: Response) => {
   try {
@@ -10,14 +11,11 @@ export const handleConfirmaPagamentoWebhook = async (req: Request, res: Response
       return res.status(400).send('pagamento ou status ausente');
     }
 
-    if (status.trim().toLowerCase() === Status.Pago) {
-      await AlterarStatusDoPagamentoUseCase.execute(id_pagamento, Status.Pago);
-      return res.status(200).send('Status do pedido atualizado para "pago"');
-    } else if (status.trim().toLowerCase() === Status.Cancelado) {
-      await AlterarStatusDoPagamentoUseCase.execute(id_pagamento, Status.Cancelado);
-      return res
-        .status(200)
-        .send('Status do pagamento atualizado para "cancelado"');
+    if (status.trim().toLowerCase() === Status.Pago || status.trim().toLowerCase() === Status.Cancelado) {
+      const confirmaAtualizacao = await AlterarStatusDoPagamentoUseCase.execute(id_pagamento, status.trim().toLowerCase());
+      await startStepFunctionExecution(confirmaAtualizacao)
+
+      return res.status(200).send('Status do pedido atualizado para' + status.trim().toLowerCase());
     } else {
       return res.status(400).send('Status inválido recebido');
     }

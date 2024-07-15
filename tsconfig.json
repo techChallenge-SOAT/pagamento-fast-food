@@ -12,12 +12,12 @@
       "@docs/*": ["./docs/*"]
     },
     "baseUrl": "./",
-    "outDir": "./dist",
-    "rootDir": "./",
+    "outDir": "./dist/src",
+    "rootDir": "./src",
     "resolveJsonModule": true
   },
   "exclude": ["node_modules"],
-  "include": [ "*"],
+  "include": ["./typings/*.d.ts", "src/**/*.ts"],
   "typeAcquisition": {
     "enable": false
   }
