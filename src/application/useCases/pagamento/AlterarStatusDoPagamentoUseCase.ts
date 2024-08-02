@@ -1,6 +1,6 @@
-import { PagamentoRepository } from '../../../adapters/postgres/pagamento/PagamentoRepository';
-import {PedidoFastFoodService} from '../../../adapters/services/BuscarPorIdPedido'
-import { Status } from '../../../domain/models/Pagamento';
+import { PagamentoRepository } from "../../../adapters/postgres/pagamento/PagamentoRepository";
+import { PedidoFastFoodService } from "../../../adapters/services/BuscarPorIdPedido";
+import { Status } from "../../../domain/models/Pagamento";
 
 export class AlterarStatusDoPagamentoUseCase {
   static async execute(id: string, status: Status) {
@@ -14,15 +14,17 @@ export class AlterarStatusDoPagamentoUseCase {
     }
 
     if (!Object.values(Status).includes(status)) {
-      throw new Error('Status inválido');
+      throw new Error("Status inválido");
     }
 
-    await PagamentoRepository.atualizarStatus(id, status)  
+    await PagamentoRepository.atualizarStatus(id, status);
 
-    const detalhePedido = await PedidoFastFoodService.consultarPedido(pedido?.id_pedido)
-    if(detalhePedido?.data){
-      detalhePedido.data.status = status
+    const detalhePedido = await PedidoFastFoodService.consultarPedido(
+      pedido?.id_pedido,
+    );
+    if (detalhePedido?.data) {
+      detalhePedido.data.status = status;
     }
-    return detalhePedido?.data
+    return detalhePedido?.data;
   }
 }

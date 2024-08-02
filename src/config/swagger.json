@@ -31,7 +31,12 @@
                     "type": "number"
                   }
                 },
-                "required": ["id_pedido", "cpf_cliente", "descricao_pedido", "valor"]
+                "required": [
+                  "id_pedido",
+                  "cpf_cliente",
+                  "descricao_pedido",
+                  "valor"
+                ]
               }
             }
           }

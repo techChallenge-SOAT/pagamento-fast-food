@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   postgres:
     image: postgres:latest
@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgresdata:/var/lib/postgresql/data
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '8000:8000'
+      - "8000:8000"
     volumes:
       - .:/app
     command: npm run dev
@@ -31,8 +31,8 @@ services:
       PEDIDO_FAST_FOOD_URL: http://pedidos:3000
       PAGAMENTO_FEST_FOOD_URL: http://pagamentos:8000
       AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID:  
-      AWS_SECRET_ACCESS_KEY:  
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
       STEP_FUNCTION_MACHINE: arn:aws:states:us-east-1:<account-id>:stateMachine:<state-machine-name>
       SQS_CONFIRM_PAYMENT_QUEUE: https://sqs.us-east-1.amazonaws.com/<account-id>/confirmar-pagamento-queue
       SQS_CANCEL_PAYMENT_QUEUE: https://sqs.us-east-1.amazonaws.com/<account-id>/cancelar-pagamento-queue
