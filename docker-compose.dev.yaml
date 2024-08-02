@@ -33,7 +33,7 @@ services:
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID:  
       AWS_SECRET_ACCESS_KEY:  
-      STEP_FUNCTION_MACHINE: arn:aws:states:us-east-1:<account-id>:stateMachine:MyStateMachine-86q70vx3x
+      STEP_FUNCTION_MACHINE: arn:aws:states:us-east-1:<account-id>:stateMachine:<state-machine-name>
       SQS_CONFIRM_PAYMENT_QUEUE: https://sqs.us-east-1.amazonaws.com/<account-id>/confirmar-pagamento-queue
       SQS_CANCEL_PAYMENT_QUEUE: https://sqs.us-east-1.amazonaws.com/<account-id>/cancelar-pagamento-queue
     networks:
