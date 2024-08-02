@@ -24,7 +24,7 @@ export const handleConfirmaPagamentoWebhook = async (
       );
       await startStepFunctionExecution(confirmaAtualizacao);
 
-      return res.status(200).send('Status do pedido atualizado para' + status);
+      return res.status(200).send(`Status do pedido atualizado para ${status}`);
     } else {
       return res.status(400).send('Status inválido recebido');
     }
