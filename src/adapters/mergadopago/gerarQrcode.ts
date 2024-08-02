@@ -1,5 +1,5 @@
-import qrcode from "qrcode";
-import { simularConfirmacaoPagamentoWebhook } from "./webhookPagamento";
+import qrcode from 'qrcode';
+import { simularConfirmacaoPagamentoWebhook } from './webhookPagamento';
 interface DadosPagamento {
   valor: number;
   descricao_pedido: string;
@@ -13,27 +13,27 @@ function gerarStringAleatoria(): string {
 const dataAtual: Date = new Date();
 
 function gerarPixPayload(pixData: DadosPagamento): string {
-  const payloadFormatIndicator: string = "00";
+  const payloadFormatIndicator: string = '00';
   const merchantAccountInformation: string = pixData.cpf_cliente;
-  const merchantCategoryCode: string = "0000";
-  const transactionCurrency: string = "986";
+  const merchantCategoryCode: string = '0000';
+  const transactionCurrency: string = '986';
   const transactionAmount: number = pixData.valor;
-  const countryCode: string = "BR";
+  const countryCode: string = 'BR';
   const additionalDataField: string = pixData.descricao_pedido;
   const idEndToEnd: string = `E${String(dataAtual.getDate()).padStart(
     2,
-    "0",
+    '0',
   )}${String(dataAtual.getMonth() + 1).padStart(
     2,
-    "0",
+    '0',
   )}${dataAtual.getFullYear()}${String(dataAtual.getHours()).padStart(
     2,
-    "0",
-  )}${String(dataAtual.getMinutes()).padStart(2, "0")}${String(
+    '0',
+  )}${String(dataAtual.getMinutes()).padStart(2, '0')}${String(
     dataAtual.getSeconds(),
-  ).padStart(2, "0")}${gerarStringAleatoria()}`;
+  ).padStart(2, '0')}${gerarStringAleatoria()}`;
   const payload = `${payloadFormatIndicator}${merchantAccountInformation}${merchantCategoryCode}${transactionCurrency}${transactionAmount}${countryCode}${additionalDataField}${idEndToEnd}`;
-  const checksum: string = "00";
+  const checksum: string = '00';
   return `${payload}${checksum}`;
 }
 
@@ -56,7 +56,7 @@ export async function gerarQrCodePix({
   const url: string = `000201${payload}`;
   const codigoTexto: string = url;
   const imagem: string = await gerarQRCodeImagem(url);
-  await simularConfirmacaoPagamentoWebhook({ id: id, status: "pago" });
+  await simularConfirmacaoPagamentoWebhook({ id: id, status: 'pago' });
   return { emv: codigoTexto, img: imagem, id_pagamento: id };
 }
 

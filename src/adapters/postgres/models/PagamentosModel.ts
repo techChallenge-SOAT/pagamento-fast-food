@@ -1,5 +1,5 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../../../config/sequelize";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../../../config/sequelize';
 
 export class Pagamento extends Model {
   #id!: string;
@@ -96,18 +96,18 @@ Pagamento.init(
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
     },
     updated_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
     },
   },
   {
     sequelize,
-    modelName: "Pagamento",
-    tableName: "pagamento",
+    modelName: 'Pagamento',
+    tableName: 'pagamento',
     timestamps: false,
   },
 );

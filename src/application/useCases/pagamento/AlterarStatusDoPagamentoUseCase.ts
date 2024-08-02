@@ -1,6 +1,6 @@
-import { PagamentoRepository } from "../../../adapters/postgres/pagamento/PagamentoRepository";
-import { PedidoFastFoodService } from "../../../adapters/services/BuscarPorIdPedido";
-import { Status } from "../../../domain/models/Pagamento";
+import { PagamentoRepository } from '../../../adapters/postgres/pagamento/PagamentoRepository';
+import { PedidoFastFoodService } from '../../../adapters/services/BuscarPorIdPedido';
+import { Status } from '../../../domain/models/Pagamento';
 
 export class AlterarStatusDoPagamentoUseCase {
   static async execute(id: string, status: Status) {
@@ -14,7 +14,7 @@ export class AlterarStatusDoPagamentoUseCase {
     }
 
     if (!Object.values(Status).includes(status)) {
-      throw new Error("Status inválido");
+      throw new Error('Status inválido');
     }
 
     await PagamentoRepository.atualizarStatus(id, status);

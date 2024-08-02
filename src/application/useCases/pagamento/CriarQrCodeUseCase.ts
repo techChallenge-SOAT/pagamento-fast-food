@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
-import Pagamento from "../../valueObjects/Pagamento";
-import { PagamentoRepository } from "../../../adapters/postgres/pagamento/PagamentoRepository";
-import { gerarQrCodePix } from "../../../adapters/mergadopago/gerarQrcode";
+import Pagamento from '../../valueObjects/Pagamento';
+import { PagamentoRepository } from '../../../adapters/postgres/pagamento/PagamentoRepository';
+import { gerarQrCodePix } from '../../../adapters/mergadopago/gerarQrcode';
 
 export class CriarQrcodeUseCase {
   static async execute(

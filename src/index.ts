@@ -1,4 +1,4 @@
-import { app } from "./adapters/http/server";
+import { app } from './adapters/http/server';
 
 const port = process.env.PORT || 8000;
 

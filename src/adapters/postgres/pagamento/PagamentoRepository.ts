@@ -1,5 +1,5 @@
-import Pagamento from "../../../application/valueObjects/Pagamento";
-import { Pagamento as PagamentoModel } from "../models/PagamentosModel";
+import Pagamento from '../../../application/valueObjects/Pagamento';
+import { Pagamento as PagamentoModel } from '../models/PagamentosModel';
 
 export class PagamentoRepository {
   static async criarQrCodePagamento(pagamento: Pagamento) {

@@ -1,4 +1,4 @@
-import { stepfunc } from "../../config/stepfunction";
+import { stepfunc } from '../../config/stepfunction';
 
 export const startStepFunctionExecution = async (input: any) => {
   const messageBody = {
@@ -21,10 +21,10 @@ export const startStepFunctionExecution = async (input: any) => {
 
   try {
     const data = await stepfunc.startExecution(params).promise();
-    console.log("Execução iniciada com sucesso:", data);
+    console.log('Execução iniciada com sucesso:', data);
     return data;
   } catch (err) {
-    console.error("Erro ao iniciar execução:", err);
+    console.error('Erro ao iniciar execução:', err);
     throw err;
   }
 };

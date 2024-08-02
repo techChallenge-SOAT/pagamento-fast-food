@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 const baseUrlPagamento = process.env.PAGAMENTO_FEST_FOOD_URL;
 
 interface PagamentoConfirmadoPayload {
