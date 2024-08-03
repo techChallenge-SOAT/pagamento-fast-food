@@ -1,25 +1,42 @@
-name: SonarCloud
+name: Sonar
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
-  sonarcloud:
-    name: Analyze
+  tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
-      - name: Checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test:cov
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14' # Altere conforme a versão necessária para seu projeto
+          node-version: "14"
 
       - name: Install dependencies
         run: npm install
@@ -31,8 +48,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Run tests
-        run: npm run test:cov
-        # Se você estiver usando outro comando para rodar testes, ajuste conforme necessário.
-
