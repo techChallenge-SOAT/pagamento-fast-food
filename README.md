@@ -94,8 +94,8 @@ Lembre-se atualizar a envs
 >2. Atualizar status Pedido para `Aguardando Pagamento`
 >3. Atualizar status Pedido para `pago`
 
-# Evidências de testes
-- SAGA
+# SAGA
+
 - **Escolha:** Orquestrador
   
 A escolha do padrão SAGA de Orquestração para um sistema de pedido de fast food é justificada por:
