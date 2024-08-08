@@ -91,9 +91,29 @@ _Então_ status do pagamento deve ser atualizado para pago
 
 > [!NOTE]
 >
-> 1.  Gerar pagamento pedido
-> 2.  Atualizar status Pedido para `Aguardando Pagamento`
-> 3.  Atualizar status Pedido para `pago`
+>1. Gerar pagamento pedido
+>2. Atualizar status Pedido para `Aguardando Pagamento`
+>3. Atualizar status Pedido para `pago`
+
+# SAGA
+
+- **Escolha:** Orquestrador
+  
+A escolha do padrão SAGA de Orquestração para um sistema de pedido de fast food é justificada por:
+
+**Controle Centralizado:** O orquestrador gerencia o fluxo de pedidos, coordenando etapas como preparação, pagamento e entrega.
+
+**Visibilidade e Monitoramento**: Proporciona visibilidade clara do status dos pedidos, facilitando o monitoramento e a resolução de problemas em tempo real.
+
+**Lógica de Compensação**: Simplifica a gestão de falhas, acionando transações compensatórias quando necessário para manter a consistência.
+
+**Gestão de Falhas e Retries**: O orquestrador pode gerenciar falhas e tentativas de forma centralizada, garantindo a conclusão ou reversão adequada das transações.
+
+**Facilidade de Expansão**: Permite adicionar novas funcionalidades sem impactar os serviços individuais.
+
+**Consistência dos Dados**: Assegura que os dados sejam consistentes em todo o sistema.
+
+Em resumo, a orquestração oferece controle preciso, adaptabilidade e uma experiência de usuário confiável em sistemas de pedido de fast food.
 
 # Evidências de testes
 
