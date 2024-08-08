@@ -2,7 +2,13 @@ import Pagamento from '../Pagamento';
 
 describe('pagamento', () => {
   it('should create an instance of pagamento with correct properties', () => {
-    const pagamento = new Pagamento('33834898-7ce0-4b88-a319-95b8a01d6881', '12345678900', 'pendente', 'descricao pedido', 100);
+    const pagamento = new Pagamento(
+      '33834898-7ce0-4b88-a319-95b8a01d6881',
+      '12345678900',
+      'pendente',
+      'descricao pedido',
+      100,
+    );
 
     expect(pagamento).toBeInstanceOf(Pagamento);
     expect(pagamento).toHaveProperty('id');

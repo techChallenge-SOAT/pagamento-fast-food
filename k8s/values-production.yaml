@@ -27,7 +27,7 @@ spec:
               value: postgres://postgres:postgres@host.docker.internal:5432/bd-pagamento
             - name: URL_PEDIDOS
               value: http://pedidos-fast-food-service:3000/pedidos
-            
+
 ---
 apiVersion: v1
 kind: Service
@@ -41,4 +41,3 @@ spec:
       port: 8000
       targetPort: 8000
   type: NodePort
-  

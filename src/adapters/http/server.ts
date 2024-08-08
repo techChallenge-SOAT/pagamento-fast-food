@@ -17,7 +17,7 @@ app.use('/pagamento', pagamentoRoutes);
 app.use('/webhooks/mercadopago/confirmacao', handleConfirmaPagamentoWebhook);
 
 app.get('/', (req, res) => {
-    res.send('Sistema de Pagamentos');
-  });
-  
+  res.send('Sistema de Pagamentos');
+});
+
 export { app };

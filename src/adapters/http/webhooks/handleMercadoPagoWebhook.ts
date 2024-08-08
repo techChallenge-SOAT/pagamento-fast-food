@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import { AlterarStatusDoPagamentoUseCase } from '../../../application/useCases/pagamento/AlterarStatusDoPagamentoUseCase';
 import { Status } from '../../../domain/models/Pagamento';
+import { startStepFunctionExecution } from '../../stepfunction/ExecutaOrquestrador';
+import { escape } from 'he';
 
-export const handleConfirmaPagamentoWebhook = async (req: Request, res: Response) => {
+export const handleConfirmaPagamentoWebhook = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { id_pagamento, status } = req.body;
 
@@ -10,14 +15,17 @@ export const handleConfirmaPagamentoWebhook = async (req: Request, res: Response
       return res.status(400).send('pagamento ou status ausente');
     }
 
-    if (status.trim().toLowerCase() === Status.Pago) {
-      await AlterarStatusDoPagamentoUseCase.execute(id_pagamento, Status.Pago);
-      return res.status(200).send('Status do pedido atualizado para "pago"');
-    } else if (status.trim().toLowerCase() === Status.Cancelado) {
-      await AlterarStatusDoPagamentoUseCase.execute(id_pagamento, Status.Cancelado);
-      return res
-        .status(200)
-        .send('Status do pagamento atualizado para "cancelado"');
+    const sanitizedStatus = status.trim().toLowerCase();
+
+    if (sanitizedStatus === Status.Pago || sanitizedStatus === Status.Cancelado) {
+      const confirmaAtualizacao = await AlterarStatusDoPagamentoUseCase.execute(
+        id_pagamento,
+        sanitizedStatus,
+      );
+      await startStepFunctionExecution(confirmaAtualizacao);
+
+      // Escapa o valor do status antes de incluí-lo na resposta
+      return res.status(200).send(`Status do pedido atualizado para ${escape(sanitizedStatus)}`);
     } else {
       return res.status(400).send('Status inválido recebido');
     }

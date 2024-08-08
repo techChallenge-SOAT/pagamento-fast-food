@@ -1,203 +1,187 @@
 {
-    "service": "servico-pagamento-fast-foodddd",
-    "provider": {
-        "name": "aws",
-        "runtime": "nodejs20.x",
-        "stage": "dev",
-        "region": "us-east-1",
-        "environment": {
-            "URL_PEDIDO": "",
-            "URL_PAGAMENTO": ""
-        },
-        "vpc": {
-            "securityGroupIds": [
-                "${self:custom.dbConfig.securityGroup}"
-            ],
-            "subnetIds": [
-                "subnet-06b2de7dc8b0e52d6",
-                "subnet-072932e7d1f8a8e87",
-                "subnet-05e02de9c0092df5b",
-                "subnet-0093cd8eb65689bef",
-                "subnet-0bff80e356ded0471",
-                "subnet-0c0a94217709865b8"
-            ]
-        }
+  "service": "servico-pagamento-fast-foodddd",
+  "provider": {
+    "name": "aws",
+    "runtime": "nodejs20.x",
+    "stage": "dev",
+    "region": "us-east-1",
+    "environment": {
+      "URL_PEDIDO": "",
+      "URL_PAGAMENTO": ""
     },
-    "functions": {
-        "app": {
-            "handler": "dist/handler.handler",
-            "environment": {
-                "DATABASE_URL": "${self:service}-${self:provider.stage}.DatabaseUrl",
-                "URL_PEDIDO": "teste",
-                "URL_PAGAMENTO": "teste"
-            },
-            "events": [
-                {
-                    "http": {
-                        "path": "/",
-                        "method": "any"
-                    }
-                },
-                {
-                    "http": {
-                        "path": "/{proxy+}",
-                        "method": "any"
-                    }
-                }
-            ]
-        }
-    },
-    "package": {
-        "exclude": [
-            "node_modules/**",
-            ".gitignore",
-            ".git/**"
-        ]
-    },
-    "plugins": [
-        "serverless-webpack",
-        "serverless-dotenv-plugin"
-    ],
-    "resources": {
-        "Resources": {
-            "ApiGatewayRestApi": {
-                "Type": "AWS::ApiGateway::RestApi",
-                "Properties": {
-                    "Name": "${self:service}-${self:provider.stage}-api"
-                }
-            },
-            "ApiGatewayDeployment": {
-                "Type": "AWS::ApiGateway::Deployment",
-                "Properties": {
-                    "RestApiId": {
-                        "Ref": "ApiGatewayRestApi"
-                    },
-                    "StageName": "${self:provider.stage}"
-                },
-                "DependsOn": [
-                    "ApiGatewayMethodRoot"
-                ]
-            },
-            "ApiGatewayMethodRoot": {
-                "Type": "AWS::ApiGateway::Method",
-                "Properties": {
-                    "RestApiId": {
-                        "Ref": "ApiGatewayRestApi"
-                    },
-                    "ResourceId": {
-                        "Fn::GetAtt": [
-                            "ApiGatewayRestApi",
-                            "RootResourceId"
-                        ]
-                    },
-                    "HttpMethod": "GET",
-                    "AuthorizationType": "NONE",
-                    "Integration": {
-                        "IntegrationHttpMethod": "POST",
-                        "Type": "AWS",
-                        "Uri": {
-                            "Fn::Sub": "arn:aws:apigateway:${self:provider.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-app/invocations"
-                        }
-                    },
-                    "MethodResponses": [
-                        {
-                            "StatusCode": 200,
-                            "ResponseParameters": {
-                                "method.response.header.Content-Type": true
-                            }
-                        },
-                        {
-                            "StatusCode": 400,
-                            "ResponseParameters": {
-                                "method.response.header.Content-Type": true
-                            }
-                        },
-                        {
-                            "StatusCode": 500,
-                            "ResponseParameters": {
-                                "method.response.header.Content-Type": true
-                            }
-                        }
-                    ]
-                }
-            },
-            "MyDBInstance": {
-                "Type": "AWS::RDS::DBInstance",
-                "Properties": {
-                    "DBInstanceIdentifier": "bd-pagamento-foodddd",
-                    "DBInstanceClass": "db.t3.micro",
-                    "Engine": "postgres",
-                    "EngineVersion": "13.15",
-                    "MasterUsername": "bd_pagamento",
-                    "MasterUserPassword": "TsTxHm123daseq",
-                    "DBName": "bd_pagamento",
-                    "AllocatedStorage": 20,
-                    "PubliclyAccessible": true,
-                    "VPCSecurityGroups": [
-                        "${self:custom.dbConfig.securityGroup}"
-                    ]
-                }
-            },
-            "MyDBSecurityGroup": {
-                "Type": "AWS::EC2::SecurityGroup",
-                "Properties": {
-                    "GroupDescription": "Security group for RDS access",
-                    "VpcId": "vpc-032659b549a29f127",
-                    "SecurityGroupIngress": [
-                        {
-                            "IpProtocol": "tcp",
-                            "FromPort": 5432,
-                            "ToPort": 5432,
-                            "CidrIp": "0.0.0.0/0"
-                        }
-                    ]
-                }
-            },
-            "MyDBSubnetGroup": {
-                "Type": "AWS::RDS::DBSubnetGroup",
-                "Properties": {
-                    "DBSubnetGroupDescription": "Subnet group for RDS instance",
-                    "SubnetIds": [
-                        "subnet-06b2de7dc8b0e52d6",
-                        "subnet-072932e7d1f8a8e87",
-                        "subnet-05e02de9c0092df5b",
-                        "subnet-0093cd8eb65689bef",
-                        "subnet-0bff80e356ded0471",
-                        "subnet-0c0a94217709865b8"
-                    ]
-                }
-            }
-        }
-    },
-    "outputs": {
-        "DatabaseUrl": {
-            "Description": "JDBC connection string for the RDS instance",
-            "Value": {
-                "Fn::Sub": "postgresql://${self:custom.dbConfig.username}:${self:custom.dbConfig.password}@${self:custom.dbConfig.host}:${self:custom.dbConfig.port}/${self:custom.dbConfig.dbName}"
-            }
-        }
-    },
-    "custom": {
-        "webpack": {
-            "webpackConfig": "./webpack.config.js",
-            "includeModules": true
-        },
-        "dbConfig": {
-            "host": "${self:service}-${self:provider.stage}.DatabaseUrl",
-            "port": 5432,
-            "username": "bd_pagamento",
-            "password": "TsTxHm123daseq",
-            "dbName": "bd_pagamento",
-            "securityGroup": "sg-0062601e5c0f0680d",
-            "vpcId": "vpc-032659b549a29f127",
-            "subnets": [
-                "subnet-06b2de7dc8b0e52d6",
-                "subnet-072932e7d1f8a8e87",
-                "subnet-05e02de9c0092df5b",
-                "subnet-0093cd8eb65689bef",
-                "subnet-0bff80e356ded0471",
-                "subnet-0c0a94217709865b8"
-            ]
-        }
+    "vpc": {
+      "securityGroupIds": ["${self:custom.dbConfig.securityGroup}"],
+      "subnetIds": [
+        "subnet-06b2de7dc8b0e52d6",
+        "subnet-072932e7d1f8a8e87",
+        "subnet-05e02de9c0092df5b",
+        "subnet-0093cd8eb65689bef",
+        "subnet-0bff80e356ded0471",
+        "subnet-0c0a94217709865b8"
+      ]
     }
+  },
+  "functions": {
+    "app": {
+      "handler": "dist/handler.handler",
+      "environment": {
+        "DATABASE_URL": "${self:service}-${self:provider.stage}.DatabaseUrl",
+        "URL_PEDIDO": "teste",
+        "URL_PAGAMENTO": "teste"
+      },
+      "events": [
+        {
+          "http": {
+            "path": "/",
+            "method": "any"
+          }
+        },
+        {
+          "http": {
+            "path": "/{proxy+}",
+            "method": "any"
+          }
+        }
+      ]
+    }
+  },
+  "package": {
+    "exclude": ["node_modules/**", ".gitignore", ".git/**"]
+  },
+  "plugins": ["serverless-webpack", "serverless-dotenv-plugin"],
+  "resources": {
+    "Resources": {
+      "ApiGatewayRestApi": {
+        "Type": "AWS::ApiGateway::RestApi",
+        "Properties": {
+          "Name": "${self:service}-${self:provider.stage}-api"
+        }
+      },
+      "ApiGatewayDeployment": {
+        "Type": "AWS::ApiGateway::Deployment",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "ApiGatewayRestApi"
+          },
+          "StageName": "${self:provider.stage}"
+        },
+        "DependsOn": ["ApiGatewayMethodRoot"]
+      },
+      "ApiGatewayMethodRoot": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "ApiGatewayRestApi"
+          },
+          "ResourceId": {
+            "Fn::GetAtt": ["ApiGatewayRestApi", "RootResourceId"]
+          },
+          "HttpMethod": "GET",
+          "AuthorizationType": "NONE",
+          "Integration": {
+            "IntegrationHttpMethod": "POST",
+            "Type": "AWS",
+            "Uri": {
+              "Fn::Sub": "arn:aws:apigateway:${self:provider.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-app/invocations"
+            }
+          },
+          "MethodResponses": [
+            {
+              "StatusCode": 200,
+              "ResponseParameters": {
+                "method.response.header.Content-Type": true
+              }
+            },
+            {
+              "StatusCode": 400,
+              "ResponseParameters": {
+                "method.response.header.Content-Type": true
+              }
+            },
+            {
+              "StatusCode": 500,
+              "ResponseParameters": {
+                "method.response.header.Content-Type": true
+              }
+            }
+          ]
+        }
+      },
+      "MyDBInstance": {
+        "Type": "AWS::RDS::DBInstance",
+        "Properties": {
+          "DBInstanceIdentifier": "bd-pagamento-foodddd",
+          "DBInstanceClass": "db.t3.micro",
+          "Engine": "postgres",
+          "EngineVersion": "13.15",
+          "MasterUsername": "bd_pagamento",
+          "MasterUserPassword": "TsTxHm123daseq",
+          "DBName": "bd_pagamento",
+          "AllocatedStorage": 20,
+          "PubliclyAccessible": true,
+          "VPCSecurityGroups": ["${self:custom.dbConfig.securityGroup}"]
+        }
+      },
+      "MyDBSecurityGroup": {
+        "Type": "AWS::EC2::SecurityGroup",
+        "Properties": {
+          "GroupDescription": "Security group for RDS access",
+          "VpcId": "vpc-032659b549a29f127",
+          "SecurityGroupIngress": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 5432,
+              "ToPort": 5432,
+              "CidrIp": "0.0.0.0/0"
+            }
+          ]
+        }
+      },
+      "MyDBSubnetGroup": {
+        "Type": "AWS::RDS::DBSubnetGroup",
+        "Properties": {
+          "DBSubnetGroupDescription": "Subnet group for RDS instance",
+          "SubnetIds": [
+            "subnet-06b2de7dc8b0e52d6",
+            "subnet-072932e7d1f8a8e87",
+            "subnet-05e02de9c0092df5b",
+            "subnet-0093cd8eb65689bef",
+            "subnet-0bff80e356ded0471",
+            "subnet-0c0a94217709865b8"
+          ]
+        }
+      }
+    }
+  },
+  "outputs": {
+    "DatabaseUrl": {
+      "Description": "JDBC connection string for the RDS instance",
+      "Value": {
+        "Fn::Sub": "postgresql://${self:custom.dbConfig.username}:${self:custom.dbConfig.password}@${self:custom.dbConfig.host}:${self:custom.dbConfig.port}/${self:custom.dbConfig.dbName}"
+      }
+    }
+  },
+  "custom": {
+    "webpack": {
+      "webpackConfig": "./webpack.config.js",
+      "includeModules": true
+    },
+    "dbConfig": {
+      "host": "${self:service}-${self:provider.stage}.DatabaseUrl",
+      "port": 5432,
+      "username": "bd_pagamento",
+      "password": "TsTxHm123daseq",
+      "dbName": "bd_pagamento",
+      "securityGroup": "sg-0062601e5c0f0680d",
+      "vpcId": "vpc-032659b549a29f127",
+      "subnets": [
+        "subnet-06b2de7dc8b0e52d6",
+        "subnet-072932e7d1f8a8e87",
+        "subnet-05e02de9c0092df5b",
+        "subnet-0093cd8eb65689bef",
+        "subnet-0bff80e356ded0471",
+        "subnet-0c0a94217709865b8"
+      ]
+    }
+  }
 }

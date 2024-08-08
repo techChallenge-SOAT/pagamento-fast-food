@@ -2,7 +2,6 @@ import Pagamento from '../../../application/valueObjects/Pagamento';
 import { Pagamento as PagamentoModel } from '../models/PagamentosModel';
 
 export class PagamentoRepository {
-
   static async criarQrCodePagamento(pagamento: Pagamento) {
     return await PagamentoModel.create({
       id: pagamento.id,
@@ -19,7 +18,10 @@ export class PagamentoRepository {
   }
 
   static async atualizarStatus(id: string, status_pagamento: string) {
-    return PagamentoModel.update({ status_pagamento: status_pagamento, updated_at: new Date() }, { where: { id: id } })
+    return PagamentoModel.update(
+      { status_pagamento: status_pagamento, updated_at: new Date() },
+      { where: { id: id } },
+    );
   }
 
   static async obterStatus(id: string): Promise<string | null | undefined> {

@@ -1,23 +1,21 @@
 import express, { Request, Response } from 'express';
-import {Status} from '../../../domain/models/Pagamento'
+import { Status } from '../../../domain/models/Pagamento';
 import { CriarQrcodeUseCase } from '../../../application/useCases/pagamento/CriarQrCodeUseCase';
 import { BuscarPagamentoPorIdUseCase } from '../../../application/useCases/pagamento/BuscarPagamentoPorIdUseCase';
-
 
 import logger from '../../../config/logger';
 const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
-  let { id_pedido, cpf_cliente, descricao_pedido, valor, status_pagamento } = req.body;
-  status_pagamento = Status.Aguardando
+  const { id_pedido, cpf_cliente, descricao_pedido, valor } = req.body;
   try {
     const pagamento = await CriarQrcodeUseCase.execute(
       id_pedido,
       cpf_cliente,
-      status_pagamento,
+      Status.Aguardando,
       descricao_pedido,
       valor,
-      );
+    );
 
     return res.status(200).json(pagamento);
   } catch (error) {
@@ -27,7 +25,6 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 router.get('/:id', async (req: Request, res: Response) => {
-
   try {
     const id = String(req.params.id);
     const pagamento = await BuscarPagamentoPorIdUseCase.execute(id);
@@ -36,6 +33,5 @@ router.get('/:id', async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Erro ao buscar o pagamento.' });
   }
 });
-
 
 export default router;
