@@ -1,0 +1,180 @@
+{
+    "Comment": "A payment confirmation workflow following the SAGA pattern",
+    "StartAt": "VerificarStatusPagamento",
+    "States": {
+      "VerificarStatusPagamento": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.status",
+            "StringEquals": "pago",
+            "Next": "ConfirmarPagamento"
+          },
+          {
+            "Variable": "$.status",
+            "StringEquals": "cancelado",
+            "Next": "CancelarPagamento"
+          }
+        ]
+      },
+      
+      "ConfirmarPagamento": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/confirmar-pagamento-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.confirmarPagamentoResult",
+        "Next": "AtualizarStatusPedidoRecebido",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "CompensarConfirmarPagamento"
+          }
+        ]
+      },
+      "AtualizarStatusPedidoRecebido": {
+        "Type": "Pass",
+        "Parameters": {
+          "status": "recebido",
+          "id.$": "$.id",
+          "cliente_cpf.$": "$.cliente_cpf",
+          "data_pedido.$": "$.data_pedido",
+          "itens.$": "$.itens"
+        },
+        "ResultPath": "$",
+        "Next": "ReceberParaCozinha"
+      },
+      "NotificarClientePgto": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/notificar-cliente-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.notificarClienteResult",
+        "Next": "ReceberParaCozinha"
+      },
+      "ReceberParaCozinha": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/receber-para-cozinha-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.enviarParaCozinhaResult",
+        "Next": "AtualizarStatusPedidoConfirmado",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "CompensarReceberParaCozinha"
+          }
+        ]
+      },
+      "AtualizarStatusPedidoConfirmado": {
+        "Type": "Pass",
+        "Parameters": {
+          "status": "em preparação",
+          "id.$": "$.id",
+          "cliente_cpf.$": "$.cliente_cpf",
+          "data_pedido.$": "$.data_pedido",
+          "itens.$": "$.itens"
+        },
+        "ResultPath": "$",
+        "Next": "EnviarParaCozinha"
+      },
+      "EnviarParaCozinha": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/enviar-para-cozinha-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.enviarParaCozinhaResult",
+        "Next": "NotificarCliente",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "CompensarEnviarParaCozinha"
+          }
+        ]
+      },
+      "NotificarCliente": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/notificar-cliente-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.notificarClienteResult",
+        "End": true
+      },
+      "CancelarPagamento": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/cancelar-pagamento-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.cancelarPagamentoResult",
+        "Next": "AtualizarStatusPedidoCancelado",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "CancelarPagamento"
+          }
+        ]
+      },
+      "AtualizarStatusPedidoCancelado": {
+        "Type": "Pass",
+        "Parameters": {
+          "status": "cancelado",
+          "id.$": "$.id",
+          "cliente_cpf.$": "$.cliente_cpf",
+          "data_pedido.$": "$.data_pedido",
+          "itens.$": "$.itens"
+        },
+        "ResultPath": "$",
+        "Next": "NotificarCliente"
+      },
+      "CompensarConfirmarPagamento": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/confirmar-pagamento-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.compensarConfirmarPagamentoResult",
+        "Next": "CancelarPagamento"
+      },
+      "CompensarReceberParaCozinha": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/receber-para-cozinha-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.compensarReceberParaCozinhaResult",
+        "Next": "CompensarConfirmarPagamento"
+      },
+      "CompensarEnviarParaCozinha": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+        "Parameters": {
+          "QueueUrl": "https://sqs.us-east-1.amazonaws.com/<account_id>/enviar-para-cozinha-queue",
+          "MessageBody.$": "$"
+        },
+        "ResultPath": "$.compensarEnviarParaCozinhaResult",
+        "Next": "CompensarConfirmarPagamento"
+      }
+    }
+  }
