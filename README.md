@@ -117,7 +117,7 @@ Em resumo, a orquestração oferece controle preciso, adaptabilidade e uma exper
 
 **Arquivo de configuração da maquinha de estado**
 
- - Step Functions
+ - Step Functions: 
  [workflow da maquina de estado](https://github.com/techChallenge-SOAT/pagamento-fast-food/blob/main/assets/workflowStepFunction.json)
 
 # Evidências de testes
