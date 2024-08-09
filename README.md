@@ -115,6 +115,11 @@ A escolha do padrão SAGA de Orquestração para um sistema de pedido de fast fo
 
 Em resumo, a orquestração oferece controle preciso, adaptabilidade e uma experiência de usuário confiável em sistemas de pedido de fast food.
 
+**Arquivo de configuração da maquinha de estado**
+
+- Step Functions
+![workflow da maquina de estado](https://github.com/techChallenge-SOAT/pagamento-fast-food/blob/main/assets/workflowStepFunction.json)
+
 # Evidências de testes
 
 - Testes criados
